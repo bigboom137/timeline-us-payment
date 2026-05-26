@@ -367,6 +367,7 @@ function bindEvents() {
     if (state.currentItemIdx > 0) {
       state.currentItemIdx--;
       renderDetail();
+      window.scrollTo(0, 0);
     }
   });
 
@@ -376,6 +377,7 @@ function bindEvents() {
     if (state.currentItemIdx < era.items.length - 1) {
       state.currentItemIdx++;
       renderDetail();
+      window.scrollTo(0, 0);
     } else {
       renderEra();
       setScreen('era');
