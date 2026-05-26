@@ -240,19 +240,23 @@ function setScreen(name) {
 }
 
 function updateProgressBar() {
+  const wrap = $('progress-bar-wrap');
   const bar = $('progress-bar');
-  if (state.screen === 'start') { bar.style.width = '0%'; return; }
 
-  const totalEras = ERAS.length;
-  const eraProgress = (state.currentEraIdx) / totalEras;
-
-  if (state.screen === 'era') {
-    bar.style.width = (eraProgress * 100).toFixed(1) + '%';
-  } else if (state.screen === 'detail') {
-    const era = ERAS[state.currentEraIdx];
-    const itemProgress = (state.currentItemIdx + 1) / era.items.length;
-    bar.style.width = ((eraProgress + itemProgress / totalEras) * 100).toFixed(1) + '%';
+  // Hide on start + era screens
+  if (state.screen !== 'detail') {
+    wrap.style.display = 'none';
+    return;
   }
+
+  // Show on detail screen
+  wrap.style.display = 'block';
+
+  const era = ERAS[state.currentEraIdx];
+
+    const progress = ((state.currentItemIdx) / (era.items.length - 1)) * 100;
+
+    bar.style.width = progress.toFixed(1) + '%';
 }
 
 // ── Render: Era list ─────────────────────────────────────────────────────────
@@ -367,6 +371,8 @@ function bindEvents() {
     if (state.currentItemIdx > 0) {
       state.currentItemIdx--;
       renderDetail();
+      updateProgressBar();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   });
 
@@ -376,6 +382,8 @@ function bindEvents() {
     if (state.currentItemIdx < era.items.length - 1) {
       state.currentItemIdx++;
       renderDetail();
+      updateProgressBar();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       renderEra();
       setScreen('era');
